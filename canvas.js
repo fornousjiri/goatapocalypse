@@ -39,7 +39,7 @@ var model = {
     },
     time: {
         start: window.performance.now(),
-        recentFrame: window.performance.now(),
+        recentFrame: window.performance.now(),  
         normalizingConstant: 0.05
     },
     sprite: null
