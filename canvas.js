@@ -292,3 +292,4 @@ function animate() {
 }
 
 init();
+console.log (jirka jespatnej);
