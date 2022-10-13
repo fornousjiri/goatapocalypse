@@ -36,7 +36,7 @@ function init() {
             color: color,
             radius: radius
         },
-        current: {
+        state: {
             velocity: 5,
             direction: 'down',
             size: 1,
@@ -44,15 +44,38 @@ function init() {
                 x: canvas.width / 2,
                 y: canvas.height / 2
             },
-            sprite: 1
+            sprite: 0
         },
-        spriteList: [
-            'images/'
-        ]
+        spriteList: {
+            'down': [
+                'images/sprite/bgoat_down_1.png',
+                'images/sprite/bgoat_down_2.png',
+                'images/sprite/bgoat_down_3.png',
+                'images/sprite/bgoat_down_4.png'
+            ],
+            'up': [
+                'images/sprite/bgoat_up_1.png',
+                'images/sprite/bgoat_up_2.png',
+                'images/sprite/bgoat_up_3.png',
+                'images/sprite/bgoat_up_4.png'
+            ],
+            'left': [
+                'images/sprite/bgoat_left_1.png',
+                'images/sprite/bgoat_left_2.png',
+                'images/sprite/bgoat_left_3.png',
+                'images/sprite/bgoat_left_4.png'
+            ],
+            'right': [
+                'images/sprite/bgoat_right_1.png',
+                'images/sprite/bgoat_right_2.png',
+                'images/sprite/bgoat_right_3.png',
+                'images/sprite/bgoat_right_4.png'
+            ]
+        }
     };
 
     // init listeners
-    addEventListener('resize', onResize);
+    // addEventListener('resize', onResize);
     addEventListener('keydown', onKeyDown, false);
     addEventListener('keyup', onKeyUp, false);
     addEventListener('load', function() {
