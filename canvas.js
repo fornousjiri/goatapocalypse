@@ -1,24 +1,3 @@
-function degToRad(angle) {
-    return angle * (Math.PI / 180.0);
-}
-
-function radToDeg(angle) {
-    return angle * (180.0 / Math.PI);
-}
-
-function drawCircle(ctx, sx, sy, radius) {
-
-    ctx.beginPath();
-    ctx.moveTo(sx + radius, sy);
-
-    for (var angle = 0; angle < 360; angle+=10) {
-        x = sx + Math.cos(degToRad(angle)) * radius;
-        y = sy + Math.sin(degToRad(angle)) * radius;
-        ctx.lineTo(x, y);
-    }
-
-    ctx.fill();
-}
 
 // canvas
 var canvas = document.getElementById('canvas');
@@ -28,6 +7,7 @@ var ctx = canvas.getContext('2d');
 
 // model
 var model = {
+    map: {},
     object: [],
     player: {},
     keyPressed: {
@@ -41,50 +21,34 @@ var model = {
         start: window.performance.now(),
         recentFrame: window.performance.now(),  
         normalizingConstant: 0.05
-    },
-    sprite: null
+    }
 }
 
 function init() {
 
     // model
-    for (var i = 0; i < 50; i++) {
-        radius = 10 + Math.random() * 20;
-        color = 'hsl(' + Math.random() * 359 + ', 30%, 70%, 1)';
-        model.object.push({
-            init: {
-                color: color,
-                radius: radius
-            },
-            center: {
-                x: radius + Math.random() * (canvas.width - 2 * radius), 
-                y: radius // + Math.random() * (canvas.height - 2 * radius)
-            },
-            radius: radius,
-            color: color,
-            angle: Math.random() * 360,
-            velocity: 1 + Math.random() * 2,
-            alive: true
-        });
-    }
+    model.map = {
 
-    radius = 20;
-    color = 'rgba(255,0,255,1)';
+    };
+
     model.player = {
         init: {
             color: color,
             radius: radius
         },
-        center: {
-            x: canvas.width / 2, 
-            y: canvas.height - radius
-            // x: radius + Math.random() * (canvas.width - 2 * radius), 
-            // y: radius + Math.random() * (canvas.height - 2 * radius)
+        current: {
+            velocity: 5,
+            direction: 'down',
+            size: 1,
+            position: {
+                x: canvas.width / 2,
+                y: canvas.height / 2
+            },
+            sprite: 1
         },
-        radius: radius,
-        color: color,
-        angle: Math.random() * 360,
-        velocity: 5
+        spriteList: [
+            'images/'
+        ]
     };
 
     // init listeners
@@ -218,42 +182,7 @@ function update() {
 
     // player car like movement control
     
-    // dx = 0;
-    // dy = 0;
-    // if (model.keyPressed.up) {
-    //     if (model.keyPressed.left) 
-    //         model.player.angle = (360 + model.player.angle - 5) % 360; 
-    //     if (model.keyPressed.right) 
-    //         model.player.angle = (model.player.angle + 5) % 360;
-    //     dx = Math.cos(degToRad(model.player.angle)) * model.player.velocity;
-    //     dy = Math.sin(degToRad(model.player.angle)) * model.player.velocity;
-    // } else if (model.keyPressed.down) {
-    //     if (model.keyPressed.left) 
-    //         model.player.angle = (model.player.angle + 5) % 360;
-    //     if (model.keyPressed.right) 
-    //         model.player.angle = (360 + model.player.angle - 5) % 360; 
-    //     dx = - Math.cos(degToRad(model.player.angle)) * model.player.velocity;
-    //     dy = - Math.sin(degToRad(model.player.angle)) * model.player.velocity;
-    // } else {
-    //     if (model.keyPressed.left) 
-    //         model.player.angle = (360 + model.player.angle - 5) % 360; 
-    //     if (model.keyPressed.right) 
-    //         model.player.angle = (model.player.angle + 5) % 360;
-    // }
-    // cx = model.player.center.x + dx;
-    // cy = model.player.center.y + dy;
-    // if (cx < model.player.radius)
-    //     model.player.center.x = model.player.radius;
-    // else if (cx > canvas.width - model.player.radius)
-    //     model.player.center.x = canvas.width - model.player.radius;
-    // else
-    //     model.player.center.x = cx;
-    // if (cy < model.player.radius)
-    //     model.player.center.y = model.player.radius;
-    // else if (cy > canvas.height - model.player.radius)
-    //     model.player.center.y = canvas.height - model.player.radius;
-    // else
-    //     model.player.center.y = cy;
+    
 }
 
 function draw() {
