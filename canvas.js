@@ -71,6 +71,33 @@ var objectList = {
         },
         spriteSpeed: 50
     },
+    assasin1: {
+        name: 'Assasin1',
+        type: 'player',
+        spriteList: {
+            down: [
+                {src: 'images/sprite/massasin_down_1.png', img: null},
+                {src: 'images/sprite/massasin_down_2.png', img: null},
+                {src: 'images/sprite/massasin_down_3.png', img: null}
+            ],
+            up: [
+                {src: 'images/sprite/massasin_up_1.png', img: null},
+                {src: 'images/sprite/massasin_up_2.png', img: null},
+                {src: 'images/sprite/massasin_up_3.png', img: null}
+            ],
+            left: [
+                {src: 'images/sprite/massasin_left_1.png', img: null},
+                {src: 'images/sprite/massasin_left_2.png', img: null},
+                {src: 'images/sprite/massasin_left_3.png', img: null}
+            ],
+            right: [
+                {src: 'images/sprite/massasin_right_1.png', img: null},
+                {src: 'images/sprite/massasin_right_2.png', img: null},
+                {src: 'images/sprite/massasin_right_3.png', img: null}
+            ]
+        },
+        spriteSpeed: 100
+    },
     tree1: {
         name: 'Tree1',
         type: 'object',
@@ -152,15 +179,15 @@ function init() {
     // player
     model.player = {
         state: {
-            velocity: 5,
+            velocity: 3,
             direction: 'down',
-            size: 100,
+            size: 110,
             position: {
                 x: canvas.width / 2,
                 y: canvas.height / 2
             },
             sprite: 0,
-            type: objectList.goat2,
+            type: objectList.assasin1,
             spriteUpdate: 0
         }
     };
