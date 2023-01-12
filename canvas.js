@@ -107,7 +107,9 @@ var objectList = {
         type: 'object',
         spriteList: {
             top: [
-                {src: 'images/object/pine_tree_1.png', img: null}
+                {src: 'images/object/pine_tree_1.png', img: null},
+                {src: 'images/object/pine_tree_2.png', img: null},
+                {src: 'images/object/pine_tree_3.png', img: null}
             ]
         },
         spriteSpeed: 500
@@ -175,7 +177,7 @@ function init() {
                 type: objectList.tree1,
                 size: 150,
                 direction: 'top',
-                spriteUpdate: 0
+                spriteUpdate: window.performance.now() + Math.random() * objectList.tree1.spriteSpeed
             }
         },
         {
@@ -188,7 +190,7 @@ function init() {
                 type: objectList.tree3,
                 size: 300,
                 direction: 'top',
-                spriteUpdate: 0
+                spriteUpdate: window.performance.now() + Math.random() * objectList.tree3.spriteSpeed
             }
         },
         {
@@ -201,7 +203,7 @@ function init() {
                 type: objectList.tree4,
                 size: 300,
                 direction: 'top',
-                spriteUpdate: 0
+                spriteUpdate: window.performance.now() + Math.random() * objectList.tree4.spriteSpeed
             }
         },
         {
@@ -214,7 +216,7 @@ function init() {
                 type: objectList.tree2,
                 size: 300,
                 direction: 'top',
-                spriteUpdate: 0
+                spriteUpdate: window.performance.now() + Math.random() * objectList.tree2.spriteSpeed
             }
         },
         {
@@ -227,7 +229,7 @@ function init() {
                 type: objectList.tree2,
                 size: 200,
                 direction: 'top',
-                spriteUpdate: 0
+                spriteUpdate: window.performance.now() + Math.random() * objectList.tree2.spriteSpeed
             }
         },
         {
@@ -240,7 +242,7 @@ function init() {
                 type: objectList.tree4,
                 size: 300,
                 direction: 'top',
-                spriteUpdate: 0
+                spriteUpdate: window.performance.now() + Math.random() * objectList.tree4.spriteSpeed
             }
         },
     ]
