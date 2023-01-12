@@ -26,5 +26,3 @@ function jedna(test) {
 > Toto je citace
 
 [Toto je link](https://idnes.cz)
-
-
