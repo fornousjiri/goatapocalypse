@@ -41,7 +41,8 @@ var objectList = {
                 {src: 'images/sprite/bgoat_right_3.png', img: null},
                 {src: 'images/sprite/bgoat_right_4.png', img: null}
             ]
-        }
+        },
+        spriteSpeed: 50
     },
     goat2: {
         name: 'Goat2',
@@ -67,7 +68,49 @@ var objectList = {
                 {src: 'images/sprite/w_goat_right_2.png', img: null},
                 {src: 'images/sprite/w_goat_right_3.png', img: null}
             ]
-        }
+        },
+        spriteSpeed: 50
+    },
+    tree1: {
+        name: 'Tree1',
+        type: 'object',
+        spriteList: {
+            top: [
+                {src: 'images/object/asep_1.png', img: null},
+                {src: 'images/object/asep_2.png', img: null}
+            ]
+        },
+        spriteSpeed: 500
+    },
+    tree2: {
+        name: 'Tree2',
+        type: 'object',
+        spriteList: {
+            top: [
+                {src: 'images/object/big_tree_1.png', img: null}
+            ]
+        },
+        spriteSpeed: 500
+    },
+    tree3: {
+        name: 'Tree3',
+        type: 'object',
+        spriteList: {
+            top: [
+                {src: 'images/object/pink_tree_1.png', img: null}
+            ]
+        },
+        spriteSpeed: 500
+    },
+    tree4: {
+        name: 'Tree4',
+        type: 'object',
+        spriteList: {
+            top: [
+                {src: 'images/object/pine_tree_1.png', img: null}
+            ]
+        },
+        spriteSpeed: 500
     }
 };
 
@@ -95,19 +138,17 @@ var model = {
 
 function init() {
 
-    // model
+    // map
     model.map = {
         state: {
             sprite: 0,
-            type: objectList.background1
+            type: objectList.background1,
+            spriteUpdate: 0
         }
     };
 
+    // player
     model.player = {
-        init: {
-            // color: color,
-            // radius: radius
-        },
         state: {
             velocity: 5,
             direction: 'down',
@@ -117,9 +158,92 @@ function init() {
                 y: canvas.height / 2
             },
             sprite: 0,
-            type: objectList.goat2
+            type: objectList.goat2,
+            spriteUpdate: 0
         }
     };
+
+    // objects
+    model.object = [
+        {
+            state: {
+                position: {
+                    x: 600,
+                    y: 300
+                },
+                sprite: 0,
+                type: objectList.tree1,
+                size: 150,
+                direction: 'top',
+                spriteUpdate: 0
+            }
+        },
+        {
+            state: {
+                position: {
+                    x: 100,
+                    y: 300
+                },
+                sprite: 0,
+                type: objectList.tree3,
+                size: 300,
+                direction: 'top',
+                spriteUpdate: 0
+            }
+        },
+        {
+            state: {
+                position: {
+                    x: 1000,
+                    y: 700
+                },
+                sprite: 0,
+                type: objectList.tree4,
+                size: 300,
+                direction: 'top',
+                spriteUpdate: 0
+            }
+        },
+        {
+            state: {
+                position: {
+                    x: 300,
+                    y: 500
+                },
+                sprite: 0,
+                type: objectList.tree2,
+                size: 300,
+                direction: 'top',
+                spriteUpdate: 0
+            }
+        },
+        {
+            state: {
+                position: {
+                    x: 600,
+                    y: 600
+                },
+                sprite: 0,
+                type: objectList.tree2,
+                size: 200,
+                direction: 'top',
+                spriteUpdate: 0
+            }
+        },
+        {
+            state: {
+                position: {
+                    x: 1200,
+                    y: 600
+                },
+                sprite: 0,
+                type: objectList.tree4,
+                size: 300,
+                direction: 'top',
+                spriteUpdate: 0
+            }
+        },
+    ]
 
     // init listeners
     addEventListener('resize', onResize);
@@ -274,27 +398,42 @@ function update() {
 
     cx = model.player.state.position.x;
     cy = model.player.state.position.y;
+    move = false;
     if (model.keyPressed.down) {
         cy += model.player.state.velocity * timeElapsed;
-        model.player.state.sprite = (model.player.state.sprite + 1) % model.player.state.type.spriteList.down.length;
         model.player.state.direction = 'down';
+        move = true;
     } else if (model.keyPressed.up) {
         cy -= model.player.state.velocity * timeElapsed;
-        model.player.state.sprite = (model.player.state.sprite + 1) % model.player.state.type.spriteList.up.length;
         model.player.state.direction = 'up';
+        move = true;
     } else if (model.keyPressed.left) {
         cx -= model.player.state.velocity * timeElapsed;
-        model.player.state.sprite = (model.player.state.sprite + 1) % model.player.state.type.spriteList.left.length;
         model.player.state.direction = 'left';
+        move = true;
     } else if (model.keyPressed.right) {
         cx += model.player.state.velocity * timeElapsed;
-        model.player.state.sprite = (model.player.state.sprite + 1) % model.player.state.type.spriteList.right.length;
         model.player.state.direction = 'right';
+        move = true;
     }
+        
     if (model.player.state.size / 2 < cx  && cx < canvas.width - model.player.state.size / 2)
         model.player.state.position.x = cx;
     if (model.player.state.size / 2 < cy  && cy < canvas.height - model.player.state.size / 2)
-        model.player.state.position.y = cy;        
+        model.player.state.position.y = cy;
+    if (
+        move && 
+        timeStamp - model.player.state.spriteUpdate > model.player.state.type.spriteSpeed
+    ) {
+        model.player.state.sprite = (model.player.state.sprite + 1) % model.player.state.type.spriteList[model.player.state.direction].length;
+        model.player.state.spriteUpdate = timeStamp;
+    }
+    model.object.forEach(function(item){
+        if (timeStamp - item.state.spriteUpdate > item.state.type.spriteSpeed) {
+            item.state.sprite = (item.state.sprite + 1) % item.state.type.spriteList[item.state.direction].length;
+            item.state.spriteUpdate = timeStamp;
+        }
+    });
 }
 
 function draw() {
@@ -319,7 +458,16 @@ function draw() {
         model.player.state.size
     );
     
-    
+    // objects
+    model.object.forEach(function(item) {
+        ctx.drawImage(
+            item.state.type.spriteList[item.state.direction][item.state.sprite].img, 
+            item.state.position.x - item.state.size / 2, 
+            item.state.position.y - item.state.size / 2, 
+            item.state.size,
+            item.state.size
+        );
+    });
 }
 
 function animate() {
