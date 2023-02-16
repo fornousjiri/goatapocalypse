@@ -148,6 +148,7 @@ var model = {
     map: {},
     object: [],
     player: {},
+    npc: [],
     keyPressed: {
         up: false,
         down: false,
@@ -191,6 +192,25 @@ function init() {
             spriteUpdate: 0
         }
     };
+
+    // goat npc
+    model.npc = [
+        {
+            state: {
+                velocity: 3,
+                direction: 'down',
+                size: 110,
+                position: {
+                    x: canvas.width / 4,
+                    y: canvas.height / 4
+                },
+                sprite: 0,
+                type: objectList.goat2,
+                spriteUpdate: 0
+            }
+        }
+    ];
+
 
     // objects
     model.object = [
@@ -377,6 +397,57 @@ function onLoad() {
     }
 }
 
+function movePlayer(timeElapsed, timeStamp) {
+    cx = model.player.state.position.x;
+    cy = model.player.state.position.y;
+    move = false;
+    if (model.keyPressed.down) {
+        cy += model.player.state.velocity * timeElapsed;
+        model.player.state.direction = 'down';
+        move = true;
+    } else if (model.keyPressed.up) {
+        cy -= model.player.state.velocity * timeElapsed;
+        model.player.state.direction = 'up';
+        move = true;
+    } else if (model.keyPressed.left) {
+        cx -= model.player.state.velocity * timeElapsed;
+        model.player.state.direction = 'left';
+        move = true;
+    } else if (model.keyPressed.right) {
+        cx += model.player.state.velocity * timeElapsed;
+        model.player.state.direction = 'right';
+        move = true;
+    }
+        
+    if (model.player.state.size / 2 < cx  && cx < canvas.width - model.player.state.size / 2)
+        model.player.state.position.x = cx;
+    if (model.player.state.size / 2 < cy  && cy < canvas.height - model.player.state.size / 2)
+        model.player.state.position.y = cy;
+    if (
+        move && 
+        timeStamp - model.player.state.spriteUpdate > model.player.state.type.spriteSpeed
+    ) {
+        model.player.state.sprite = (model.player.state.sprite + 1) % model.player.state.type.spriteList[model.player.state.direction].length;
+        model.player.state.spriteUpdate = timeStamp;
+    }
+}
+//timestamp - ulozi cas v tu danou dobu
+//timeElapsed - kolik milisetin ubehlo od posledniho snimku
+function moveNpc(timeElapsed, timeStamp) {
+    model.npc[0].state.spriteUpdate = timeStamp;
+    model.npc[0].state.counter += timeElapsed;
+    if (model.npc[0].state.counter > 3, timeStamp++, model.npc[0].state.counter == 0)
+}
+
+function moveObject(timeElapsed, timeStamp) {
+    model.object.forEach(function(item){
+        if (timeStamp - item.state.spriteUpdate > item.state.type.spriteSpeed) {
+            item.state.sprite = (item.state.sprite + 1) % item.state.type.spriteList[item.state.direction].length;
+            item.state.spriteUpdate = timeStamp;
+        }
+    });
+}
+
 function update() {
 
     // time
@@ -423,46 +494,16 @@ function update() {
     //         object.color = object.init.color;
     // });
 
-    // player cursor like movement control
 
-    cx = model.player.state.position.x;
-    cy = model.player.state.position.y;
-    move = false;
-    if (model.keyPressed.down) {
-        cy += model.player.state.velocity * timeElapsed;
-        model.player.state.direction = 'down';
-        move = true;
-    } else if (model.keyPressed.up) {
-        cy -= model.player.state.velocity * timeElapsed;
-        model.player.state.direction = 'up';
-        move = true;
-    } else if (model.keyPressed.left) {
-        cx -= model.player.state.velocity * timeElapsed;
-        model.player.state.direction = 'left';
-        move = true;
-    } else if (model.keyPressed.right) {
-        cx += model.player.state.velocity * timeElapsed;
-        model.player.state.direction = 'right';
-        move = true;
-    }
-        
-    if (model.player.state.size / 2 < cx  && cx < canvas.width - model.player.state.size / 2)
-        model.player.state.position.x = cx;
-    if (model.player.state.size / 2 < cy  && cy < canvas.height - model.player.state.size / 2)
-        model.player.state.position.y = cy;
-    if (
-        move && 
-        timeStamp - model.player.state.spriteUpdate > model.player.state.type.spriteSpeed
-    ) {
-        model.player.state.sprite = (model.player.state.sprite + 1) % model.player.state.type.spriteList[model.player.state.direction].length;
-        model.player.state.spriteUpdate = timeStamp;
-    }
-    model.object.forEach(function(item){
-        if (timeStamp - item.state.spriteUpdate > item.state.type.spriteSpeed) {
-            item.state.sprite = (item.state.sprite + 1) % item.state.type.spriteList[item.state.direction].length;
-            item.state.spriteUpdate = timeStamp;
-        }
-    });
+    // player cursor like movement control
+    movePlayer(timeElapsed, timeStamp);
+
+    // npc
+    moveNpc(timeElapsed, timeStamp);
+
+    // object
+    moveObject(timeElapsed, timeStamp);
+    
 }
 
 function draw() {
@@ -487,6 +528,17 @@ function draw() {
         model.player.state.size
     );
     
+    // npc
+    model.npc.forEach(function(item) {
+        ctx.drawImage(
+            item.state.type.spriteList[item.state.direction][item.state.sprite].img, 
+            item.state.position.x - item.state.size / 2, 
+            item.state.position.y - item.state.size / 2, 
+            item.state.size,
+            item.state.size
+        );
+    });
+
     // objects
     model.object.forEach(function(item) {
         ctx.drawImage(
