@@ -15,7 +15,7 @@ var objectList = {
     },
     goat1 : {
         name: 'Goat1',
-        type: 'player',
+        type: 'npc',
         spriteList: {
             down: [
                 {src: 'images/sprite/bgoat_down_1.png', img: null},
@@ -46,7 +46,7 @@ var objectList = {
     },
     goat2: {
         name: 'Goat2',
-        type: 'player',
+        type: 'npc',
         spriteList: {
             down: [
                 {src: 'images/sprite/w_goat_down_1.png', img: null},
@@ -69,7 +69,7 @@ var objectList = {
                 {src: 'images/sprite/w_goat_right_3.png', img: null}
             ]
         },
-        spriteSpeed: 50
+        spriteSpeed: 55
     },
     assasin1: {
         name: 'Assasin1',
@@ -148,7 +148,7 @@ var model = {
     map: {},
     object: [],
     player: {},
-    npc: [],
+    npc: {},
     keyPressed: {
         up: false,
         down: false,
@@ -156,6 +156,7 @@ var model = {
         left: false,
         space: false
     },
+
     time: {
         start: window.performance.now(),
         recentFrame: window.performance.now(),  
@@ -193,24 +194,24 @@ function init() {
         }
     };
 
-    // goat npc
+    // goat NPC
     model.npc = [
         {
             state: {
-                velocity: 3,
+                counter: 0.0,
+                velocity: 2,
                 direction: 'down',
-                size: 110,
+                size: 70,
                 position: {
-                    x: canvas.width / 4,
-                    y: canvas.height / 4
+                    x: canvas.width - canvas.width / 4,
+                    y: canvas.height / 2
                 },
                 sprite: 0,
                 type: objectList.goat2,
-                spriteUpdate: 0
+                spriteUpdate: window.performance.now() + Math.random() * objectList.goat2.spriteSpeed
             }
         }
-    ];
-
+    ]
 
     // objects
     model.object = [
@@ -332,17 +333,21 @@ function onKeyDown(event) {
         case 38: // up
             model.keyPressed.up = true;
             break;
-        case 32: // space
-            if (model.player.state.type.name == 'Goat1') {
-                model.player.state.type = objectList.goat2;
-                model.player.state.sprite = 0;
-                model.player.state.size = 100;
-            } else {
-                model.player.state.type = objectList.goat1;
-                model.player.state.sprite = 0;
-                model.player.state.size = 100;
-            }
-            break;
+        // case 32: // space
+        //     if (model.player.state.type.name == 'Goat1') {
+        //         model.player.state.type = objectList.goat2;
+        //         model.player.state.sprite = 0;
+        //         model.player.state.size = 100;
+        //     } else {
+        //         model.player.state.type = objectList.goat1;
+        //         model.player.state.sprite = 0;
+        //         model.player.state.size = 100;
+        //     }
+        //     break;
+            case 32: //space
+                model.keyPressed.space = true;
+                break;
+                
         default: break;
     }
 }
@@ -360,6 +365,9 @@ function onKeyUp(event) {
             break;
         case 38: // up
             model.keyPressed.up = false;
+            break;
+        case 32: //space
+            model.keyPressed.space = false;
             break;
         default: break;
     }
@@ -395,57 +403,6 @@ function onLoad() {
         img.src = src;
         return img;
     }
-}
-
-function movePlayer(timeElapsed, timeStamp) {
-    cx = model.player.state.position.x;
-    cy = model.player.state.position.y;
-    move = false;
-    if (model.keyPressed.down) {
-        cy += model.player.state.velocity * timeElapsed;
-        model.player.state.direction = 'down';
-        move = true;
-    } else if (model.keyPressed.up) {
-        cy -= model.player.state.velocity * timeElapsed;
-        model.player.state.direction = 'up';
-        move = true;
-    } else if (model.keyPressed.left) {
-        cx -= model.player.state.velocity * timeElapsed;
-        model.player.state.direction = 'left';
-        move = true;
-    } else if (model.keyPressed.right) {
-        cx += model.player.state.velocity * timeElapsed;
-        model.player.state.direction = 'right';
-        move = true;
-    }
-        
-    if (model.player.state.size / 2 < cx  && cx < canvas.width - model.player.state.size / 2)
-        model.player.state.position.x = cx;
-    if (model.player.state.size / 2 < cy  && cy < canvas.height - model.player.state.size / 2)
-        model.player.state.position.y = cy;
-    if (
-        move && 
-        timeStamp - model.player.state.spriteUpdate > model.player.state.type.spriteSpeed
-    ) {
-        model.player.state.sprite = (model.player.state.sprite + 1) % model.player.state.type.spriteList[model.player.state.direction].length;
-        model.player.state.spriteUpdate = timeStamp;
-    }
-}
-//timestamp - ulozi cas v tu danou dobu
-//timeElapsed - kolik milisetin ubehlo od posledniho snimku
-function moveNpc(timeElapsed, timeStamp) {
-    model.npc[0].state.spriteUpdate = timeStamp;
-    model.npc[0].state.counter += timeElapsed;
-    if (model.npc[0].state.counter > 3, timeStamp++, model.npc[0].state.counter == 0)
-}
-
-function moveObject(timeElapsed, timeStamp) {
-    model.object.forEach(function(item){
-        if (timeStamp - item.state.spriteUpdate > item.state.type.spriteSpeed) {
-            item.state.sprite = (item.state.sprite + 1) % item.state.type.spriteList[item.state.direction].length;
-            item.state.spriteUpdate = timeStamp;
-        }
-    });
 }
 
 function update() {
@@ -494,16 +451,116 @@ function update() {
     //         object.color = object.init.color;
     // });
 
-
     // player cursor like movement control
-    movePlayer(timeElapsed, timeStamp);
 
-    // npc
-    moveNpc(timeElapsed, timeStamp);
+    cx = model.player.state.position.x;
+    cy = model.player.state.position.y;
+    move = false;
+    nmove = false;
+    if (model.keyPressed.down) {
+        cy += model.player.state.velocity * timeElapsed;
+        model.player.state.direction = 'down';
+        move = true;
+    } else if (model.keyPressed.up) {
+        cy -= model.player.state.velocity * timeElapsed;
+        model.player.state.direction = 'up';
+        move = true;
+    } else if (model.keyPressed.left) {
+        cx -= model.player.state.velocity * timeElapsed;
+        model.player.state.direction = 'left';
+        move = true;
+    } else if (model.keyPressed.right) {
+        cx += model.player.state.velocity * timeElapsed;
+        model.player.state.direction = 'right';
+        move = true;
+    }
+    if (model.keyPressed.space) {
+        model.npc[0].state.counter += timeElapsed;  
+        if (model.npc[0].state.counter > 87.0) {
+            var rand = Math.floor(Math.random() * 3) + 1;
+            if (model.npc[0].state.direction == 'up') {
+                if (rand == 1) 
+                    model.npc[0].state.direction = 'up';
+                else if (rand == 2) 
+                    model.npc[0].state.direction = 'right';
+                else if (rand == 3) 
+                    model.npc[0].state.direction = 'left';
+            }
+            else if (model.npc[0].state.direction == 'right') {
+                if (rand == 1) 
+                    model.npc[0].state.direction = 'down';
+                else if (rand == 2)
+                    model.npc[0].state.direction = 'right';
+                else if (rand == 3) 
+                    model.npc[0].state.direction = 'up';
+            }
+            else if (model.npc[0].state.direction == 'down') {
+                if (rand == 1) 
+                    model.npc[0].state.direction = 'down';
+                else if (rand == 2)
+                    model.npc[0].state.direction = 'left';
+                else if (rand == 3) 
+                    model.npc[0].state.direction = 'right';
+            }
+            else if (model.npc[0].state.direction == 'left') {
+                if (rand == 1) 
+                    model.npc[0].state.direction = 'up';
+                else if (rand == 2) 
+                    model.npc[0].state.direction = 'left';
+                else if (rand == 3) 
+                    model.npc[0].state.direction = 'down';
+            }
+            
 
-    // object
-    moveObject(timeElapsed, timeStamp);
-    
+            // var rand = Math.floor(Math.random() * 4) + 1;
+            // if (rand == 1) {
+            //     model.npc[0].state.direction = 'up';
+            // } else if (rand == 2) {
+            //     model.npc[0].state.direction = 'right';
+            // } else if (rand == 3) {
+            //     model.npc[0].state.direction = 'down';
+            // } else {
+            //     model.npc[0].state.direction = 'left';
+            // }
+            model.npc[0].state.counter = 0.0;    
+        }
+        if (model.npc[0].state.direction == 'up') {
+            model.npc[0].state.position.y -= model.npc[0].state.velocity * timeElapsed;
+        } else if (model.npc[0].state.direction == 'right') {
+            model.npc[0].state.position.x += model.npc[0].state.velocity * timeElapsed;
+        } else if (model.npc[0].state.direction == 'down') {
+            model.npc[0].state.position.y += model.npc[0].state.velocity * timeElapsed;
+        } else {
+            model.npc[0].state.position.x -= model.npc[0].state.velocity * timeElapsed;
+        }
+        nmove = true;
+    }
+      
+    if (model.player.state.size / 2 < cx  && cx < canvas.width - model.player.state.size / 2)
+        model.player.state.position.x = cx;
+    if (model.player.state.size / 2 < cy  && cy < canvas.height - model.player.state.size / 2)
+        model.player.state.position.y = cy;
+    if (
+        move && 
+        timeStamp - model.player.state.spriteUpdate > model.player.state.type.spriteSpeed
+    ) {
+        model.player.state.sprite = (model.player.state.sprite + 1) % model.player.state.type.spriteList[model.player.state.direction].length;
+        model.player.state.spriteUpdate = timeStamp;
+    }
+
+    if (
+        nmove && 
+        timeStamp - model.npc[0].state.spriteUpdate > model.npc[0].state.type.spriteSpeed
+    ) {
+        model.npc[0].state.sprite = (model.npc[0].state.sprite + 1) % model.npc[0].state.type.spriteList[model.npc[0].state.direction].length;
+        model.npc[0].state.spriteUpdate = timeStamp;
+    }
+    model.object.forEach(function(item){
+        if (timeStamp - item.state.spriteUpdate > item.state.type.spriteSpeed) {
+            item.state.sprite = (item.state.sprite + 1) % item.state.type.spriteList[item.state.direction].length;
+            item.state.spriteUpdate = timeStamp;
+        }
+    });
 }
 
 function draw() {
@@ -518,6 +575,16 @@ function draw() {
         canvas.width,
         canvas.height
     );
+    // goat npc
+    model.npc.forEach(function(item) {
+        ctx.drawImage(
+            item.state.type.spriteList[item.state.direction][item.state.sprite].img, 
+            item.state.position.x - item.state.size / 2, 
+            item.state.position.y - item.state.size / 2, 
+            item.state.size,
+            item.state.size
+        );
+    });
 
     // player
     ctx.drawImage(
@@ -528,16 +595,6 @@ function draw() {
         model.player.state.size
     );
     
-    // npc
-    model.npc.forEach(function(item) {
-        ctx.drawImage(
-            item.state.type.spriteList[item.state.direction][item.state.sprite].img, 
-            item.state.position.x - item.state.size / 2, 
-            item.state.position.y - item.state.size / 2, 
-            item.state.size,
-            item.state.size
-        );
-    });
 
     // objects
     model.object.forEach(function(item) {
