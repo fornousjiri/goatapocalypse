@@ -42,7 +42,7 @@ var objectList = {
                 {src: 'images/sprite/bgoat_right_4.png', img: null}
             ]
         },
-        spriteSpeed: 50
+        spriteSpeed: 55
     },
     goat2: {
         name: 'Goat2',
@@ -140,6 +140,38 @@ var objectList = {
             ]
         },
         spriteSpeed: 500
+    },
+    lakebb1: {
+        name: 'Lakebb1',
+        type: 'boundingbox',
+        spriteList: {
+            top: [{src: 'images/boundingbox/lakebb1.png', img: null}]
+        },
+        spriteSpeed: 500
+    },
+    lakebb2: {
+        name: 'Lakebb2',
+        type: 'boundingbox',
+        spriteList: {
+            top: [{src: 'images/boundingbox/lakebb2.png', img: null}]
+        },
+        spriteSpeed: 500
+    },
+    lakebb3: {
+        name: 'lakebb3',
+        type: 'boundingbox',
+        spriteList: {
+            top: [{src: 'images/boundingbox/lakebb3.png', img: null}]
+        },
+        spriteSpeed: 500
+    },
+    hillrbb1: {
+        name: 'hillrbb1',
+        type: 'boundingbox',
+        spriteList: {
+            top: [{src: 'images/boundingbox/hillrbb1.png', img: null}]
+        },
+        spriteSpeed: 500
     }
 };
 
@@ -149,6 +181,7 @@ var model = {
     object: [],
     player: {},
     npc: {},
+    boundingbox:[],
     keyPressed: {
         up: false,
         down: false,
@@ -206,9 +239,92 @@ function init() {
                     x: canvas.width - canvas.width / 4,
                     y: canvas.height / 2
                 },
-                sprite: 0,
+                sprite: 1,
                 type: objectList.goat2,
                 spriteUpdate: window.performance.now() + Math.random() * objectList.goat2.spriteSpeed
+            }
+        },
+        {
+            state: {
+                counter: 0.0,
+                velocity: 2,
+                direction: 'right',
+                size: 70,
+                position: {
+                    x: canvas.width -  (3 * canvas.width / 4),
+                    y: canvas.height / 2
+                },
+                sprite: 1,
+                type: objectList.goat1,
+                spriteUpdate: window.performance.now() + Math.random() * objectList.goat1.spriteSpeed
+
+            }
+        }
+    ]
+    // bounding boxes
+    model.boundingbox = [
+        {
+            state: {
+                position: {
+                    x: 1140,
+                    y: 976
+                },
+                sprite: 0,
+                type: objectList.lakebb1,
+                size: {
+                    width: 210,
+                    height: 210
+                },
+                direction: 'top',
+                spriteUpdate: window.performance.now() + Math.random() * objectList.lakebb1.spriteSpeed
+            }
+        },
+        {
+            state: {
+                position: {
+                    x: 1264,
+                    y: 1003
+                },
+                sprite: 0,
+                type: objectList.lakebb2,
+                size: {
+                    width: 40,
+                    height: 155
+                },
+                direction: 'top',
+                spriteUpdate: window.performance.now() + Math.random() * objectList.lakebb2.spriteSpeed
+            }
+        },
+        {
+            state: {
+                position: {
+                    x: 1014,
+                    y: 1003
+                },
+                sprite: 0,
+                type: objectList.lakebb3,
+                size: {
+                    width: 43,
+                    height: 155
+                },
+                direction: 'top',
+                spriteUpdate: window.performance.now() + Math.random() * objectList.lakebb2.spriteSpeed
+            }
+        },
+        {
+            state: {
+                position: {
+                    x: 1175,
+                    y: 889
+                },
+                sprite: 0,
+                type: objectList.hillrbb1,
+                size: {
+                    width: 270,
+                    height: 40
+                },
+                direction: 'top',
+                spriteUpdate: window.performance.now() + Math.random() * objectList.hillrbb1.spriteSpeed
             }
         }
     ]
@@ -303,6 +419,148 @@ function init() {
 
     // animation
     requestAnimationFrame(animate); 
+}
+
+function bbTouchtof(goatnpc1){
+    //lakebb1
+    if (goatnpc1.state.position.x <= model.boundingbox[0].state.position.x + (model.boundingbox[0].state.size.width / 2) + 30 && goatnpc1.state.position.x >= model.boundingbox[0].state.position.x - (model.boundingbox[0].state.size.width / 2) -30 && goatnpc1.state.position.y >= model.boundingbox[0].state.position.y - (model.boundingbox[0].state.size.height / 2) - 30 && goatnpc1.state.position.y <= model.boundingbox[0].state.position.y + (model.boundingbox[0].state.size.height / 2) + 30) {
+        if (goatnpc1 == model.npc[0])
+            bbTouch2 = true;
+        else if (goatnpc1 == model.npc[1])
+            bbTouch1 = true;
+    }
+    //lakebb2
+    if (goatnpc1.state.position.x <= model.boundingbox[1].state.position.x + (model.boundingbox[1].state.size.width / 2) + 30 && goatnpc1.state.position.x >= model.boundingbox[1].state.position.x - (model.boundingbox[1].state.size.width / 2) -30 && goatnpc1.state.position.y >= model.boundingbox[1].state.position.y - (model.boundingbox[1].state.size.height / 2) - 30 && goatnpc1.state.position.y <= model.boundingbox[1].state.position.y + (model.boundingbox[1].state.size.height / 2) + 30) {
+        if (goatnpc1 == model.npc[0])
+            bbTouch2 = true;
+        else if (goatnpc1 == model.npc[1])
+            bbTouch1 = true;
+    }
+    //lakebb3
+    if (goatnpc1.state.position.x <= model.boundingbox[2].state.position.x + (model.boundingbox[2].state.size.width / 2) + 30 && goatnpc1.state.position.x >= model.boundingbox[2].state.position.x - (model.boundingbox[2].state.size.width / 2) -30 && goatnpc1.state.position.y >= model.boundingbox[2].state.position.y - (model.boundingbox[2].state.size.height / 2) - 30 && goatnpc1.state.position.y <= model.boundingbox[2].state.position.y + (model.boundingbox[2].state.size.height / 2) + 30) {
+        if (goatnpc1 == model.npc[0])
+            bbTouch2 = true;
+        else if (goatnpc1 == model.npc[1])
+            bbTouch1 = true;
+    }
+    //hillrbb1
+    if (goatnpc1.state.position.x <= model.boundingbox[3].state.position.x + (model.boundingbox[3].state.size.width / 2) + 30 && goatnpc1.state.position.x >= model.boundingbox[3].state.position.x - (model.boundingbox[3].state.size.width / 2) -30 && goatnpc1.state.position.y >= model.boundingbox[3].state.position.y - (model.boundingbox[3].state.size.height / 2) - 30 && goatnpc1.state.position.y <= model.boundingbox[3].state.position.y + (model.boundingbox[3].state.size.height / 2) + 30) {
+        if (goatnpc1 == model.npc[0])
+            bbTouch2 = true;
+        else if (goatnpc1 == model.npc[1])
+            bbTouch1 = true;
+    }
+}
+
+function npcMoves(goatnpc, timeElapsed1, b){
+    if (model.keyPressed.space) {
+        goatnpc.state.counter += timeElapsed1;  
+        if (goatnpc.state.counter > 87.0) {
+            if (goatnpc.state.position.x < (canvas.width - 40) && goatnpc.state.position.x > (canvas.width - canvas.width + 40) && goatnpc.state.position.y > (canvas.height - canvas.height + 40) && goatnpc.state.position.y < (canvas.height - 40)) {
+                if (b == false) {
+                    var rand = Math.floor(Math.random() * 3) + 1;
+                    if (goatnpc.state.direction == 'up') {
+                        if (rand == 1) 
+                            goatnpc.state.direction = 'up';
+                        else if (rand == 2) 
+                            goatnpc.state.direction = 'right';
+                        else if (rand == 3) 
+                            goatnpc.state.direction = 'left';
+                    }
+                    else if (goatnpc.state.direction == 'right') {
+                        if (rand == 1) 
+                            goatnpc.state.direction = 'down';
+                        else if (rand == 2)
+                            goatnpc.state.direction = 'right';
+                        else if (rand == 3) 
+                            goatnpc.state.direction = 'up';
+                    }
+                    else if (goatnpc.state.direction == 'down') {
+                        if (rand == 1) 
+                            goatnpc.state.direction = 'down';
+                        else if (rand == 2)
+                            goatnpc.state.direction = 'left';
+                        else if (rand == 3) 
+                            goatnpc.state.direction = 'right';
+                    }
+                    else if (goatnpc.state.direction == 'left') {
+                        if (rand == 1) 
+                            goatnpc.state.direction = 'up';
+                        else if (rand == 2) 
+                            goatnpc.state.direction = 'left';
+                        else if (rand == 3) 
+                            goatnpc.state.direction = 'down';
+                    }
+                    goatnpc.state.counter = 0.0;
+                    
+                }
+                
+
+            }
+        }
+        
+
+        if (goatnpc.state.position.x < (canvas.width - 40) && goatnpc.state.position.x > (canvas.width - canvas.width + 40) && goatnpc.state.position.y > (canvas.height - canvas.height + 40) && goatnpc.state.position.y < (canvas.height - 40) && b == false) {
+            if (goatnpc.state.direction == 'up') {
+                goatnpc.state.position.y -= goatnpc.state.velocity * timeElapsed1;
+            } else if (goatnpc.state.direction == 'right') {
+                goatnpc.state.position.x += goatnpc.state.velocity * timeElapsed1;
+            } else if (goatnpc.state.direction == 'down') {
+                goatnpc.state.position.y += goatnpc.state.velocity * timeElapsed1;
+            } else {
+                goatnpc.state.position.x -= goatnpc.state.velocity * timeElapsed1;
+            }
+            nmove = true;
+        }
+
+        else if (b == true) {
+            if (goatnpc.state.direction == 'left'){
+                goatnpc.state.direction = 'right';
+                goatnpc.state.position.x += goatnpc.state.velocity * timeElapsed1;
+                b = false;
+            }
+
+            else if (goatnpc.state.direction == 'right') {
+                goatnpc.state.direction = 'left';
+                goatnpc.state.position.x -= goatnpc.state.velocity * timeElapsed1;
+                b = false;
+            }
+
+            else if (goatnpc.state.direction == 'up') {
+                goatnpc.state.direction = 'down';
+                goatnpc.state.position.y += goatnpc.state.velocity * timeElapsed1;
+                b = false;
+            }
+
+            else if (goatnpc.state.direction == 'down') {
+                goatnpc.state.direction = 'up';
+                goatnpc.state.position.y -= goatnpc.state.velocity * timeElapsed1;
+                b = false;
+            }
+        }
+
+        if (goatnpc.state.position.x >= (canvas.width - 40)) {
+            goatnpc.state.direction = 'left';
+            goatnpc.state.position.x -= goatnpc.state.velocity * timeElapsed1;
+        }
+
+        else if (goatnpc.state.position.x <= (canvas.width - canvas.width + 40)) {
+            goatnpc.state.direction = 'right';
+            goatnpc.state.position.x += goatnpc.state.velocity * timeElapsed1;
+        }
+
+        else if (goatnpc.state.position.y <= (canvas.height - canvas.height + 40)) {
+            goatnpc.state.direction = 'down';
+            goatnpc.state.position.y += goatnpc.state.velocity * timeElapsed1;
+        }
+
+        else if (goatnpc.state.position.y >= (canvas.height - 40)) {
+            goatnpc.state.direction = 'up';
+            goatnpc.state.position.y -= goatnpc.state.velocity * timeElapsed1;
+        }
+    } 
+    if (model.keyPressed.space == false)
+            goatnpc.state.sprite = 1;    
 }
 
 function onResize() {
@@ -474,67 +732,16 @@ function update() {
         model.player.state.direction = 'right';
         move = true;
     }
-    if (model.keyPressed.space) {
-        model.npc[0].state.counter += timeElapsed;  
-        if (model.npc[0].state.counter > 87.0) {
-            var rand = Math.floor(Math.random() * 3) + 1;
-            if (model.npc[0].state.direction == 'up') {
-                if (rand == 1) 
-                    model.npc[0].state.direction = 'up';
-                else if (rand == 2) 
-                    model.npc[0].state.direction = 'right';
-                else if (rand == 3) 
-                    model.npc[0].state.direction = 'left';
-            }
-            else if (model.npc[0].state.direction == 'right') {
-                if (rand == 1) 
-                    model.npc[0].state.direction = 'down';
-                else if (rand == 2)
-                    model.npc[0].state.direction = 'right';
-                else if (rand == 3) 
-                    model.npc[0].state.direction = 'up';
-            }
-            else if (model.npc[0].state.direction == 'down') {
-                if (rand == 1) 
-                    model.npc[0].state.direction = 'down';
-                else if (rand == 2)
-                    model.npc[0].state.direction = 'left';
-                else if (rand == 3) 
-                    model.npc[0].state.direction = 'right';
-            }
-            else if (model.npc[0].state.direction == 'left') {
-                if (rand == 1) 
-                    model.npc[0].state.direction = 'up';
-                else if (rand == 2) 
-                    model.npc[0].state.direction = 'left';
-                else if (rand == 3) 
-                    model.npc[0].state.direction = 'down';
-            }
-            
-
-            // var rand = Math.floor(Math.random() * 4) + 1;
-            // if (rand == 1) {
-            //     model.npc[0].state.direction = 'up';
-            // } else if (rand == 2) {
-            //     model.npc[0].state.direction = 'right';
-            // } else if (rand == 3) {
-            //     model.npc[0].state.direction = 'down';
-            // } else {
-            //     model.npc[0].state.direction = 'left';
-            // }
-            model.npc[0].state.counter = 0.0;    
-        }
-        if (model.npc[0].state.direction == 'up') {
-            model.npc[0].state.position.y -= model.npc[0].state.velocity * timeElapsed;
-        } else if (model.npc[0].state.direction == 'right') {
-            model.npc[0].state.position.x += model.npc[0].state.velocity * timeElapsed;
-        } else if (model.npc[0].state.direction == 'down') {
-            model.npc[0].state.position.y += model.npc[0].state.velocity * timeElapsed;
-        } else {
-            model.npc[0].state.position.x -= model.npc[0].state.velocity * timeElapsed;
-        }
-        nmove = true;
-    }
+    bbTouch1 = false;
+    bbTouch2 = false;
+    // pro goat2 tedy pro bilou kozu
+    bbTouchtof(model.npc[0]);
+    // pro goat1 tedy pro cernou kozu
+    bbTouchtof(model.npc[1]);
+    // pro goat2
+    npcMoves(model.npc[0], timeElapsed, bbTouch2);
+    // pro goat1
+    npcMoves(model.npc[1], timeElapsed, bbTouch1);
       
     if (model.player.state.size / 2 < cx  && cx < canvas.width - model.player.state.size / 2)
         model.player.state.position.x = cx;
@@ -555,6 +762,15 @@ function update() {
         model.npc[0].state.sprite = (model.npc[0].state.sprite + 1) % model.npc[0].state.type.spriteList[model.npc[0].state.direction].length;
         model.npc[0].state.spriteUpdate = timeStamp;
     }
+
+    if (
+        nmove && 
+        timeStamp - model.npc[1].state.spriteUpdate > model.npc[1].state.type.spriteSpeed
+    ) {
+        model.npc[1].state.sprite = (model.npc[1].state.sprite + 1) % model.npc[1].state.type.spriteList[model.npc[1].state.direction].length;
+        model.npc[1].state.spriteUpdate = timeStamp;
+    }
+
     model.object.forEach(function(item){
         if (timeStamp - item.state.spriteUpdate > item.state.type.spriteSpeed) {
             item.state.sprite = (item.state.sprite + 1) % item.state.type.spriteList[item.state.direction].length;
@@ -575,6 +791,18 @@ function draw() {
         canvas.width,
         canvas.height
     );
+
+    // bounding boxes
+        // model.boundingbox.forEach(function(item){
+        //     ctx.drawImage(
+        //         item.state.type.spriteList[item.state.direction][item.state.sprite].img,
+        //         item.state.position.x - item.state.size.width / 2, 
+        //         item.state.position.y - item.state.size.height / 2, 
+        //         item.state.size.width,
+        //         item.state.size.height,
+        //     );
+        // });
+
     // goat npc
     model.npc.forEach(function(item) {
         ctx.drawImage(
@@ -606,6 +834,9 @@ function draw() {
             item.state.size
         );
     });
+
+
+   
 }
 
 function animate() {
