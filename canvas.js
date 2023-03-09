@@ -173,6 +173,7 @@ var objectList = {
         },
         spriteSpeed: 500
     }
+    
 };
 
 // model
@@ -453,49 +454,75 @@ function bbTouchtof(goatnpc1){
 }
 
 function npcMoves(goatnpc, timeElapsed1, b){
+    var dx = goatnpc.state.position.x - model.player.state.position.x;
+    var dy = goatnpc.state.position.y - model.player.state.position.y;
+    var dxa = Math.abs(dx);
+    var dya = Math.abs(dy);
+
     if (model.keyPressed.space) {
         goatnpc.state.counter += timeElapsed1;  
         if (goatnpc.state.counter > 87.0) {
             if (goatnpc.state.position.x < (canvas.width - 40) && goatnpc.state.position.x > (canvas.width - canvas.width + 40) && goatnpc.state.position.y > (canvas.height - canvas.height + 40) && goatnpc.state.position.y < (canvas.height - 40)) {
                 if (b == false) {
-                    var rand = Math.floor(Math.random() * 3) + 1;
-                    if (goatnpc.state.direction == 'up') {
-                        if (rand == 1) 
-                            goatnpc.state.direction = 'up';
-                        else if (rand == 2) 
-                            goatnpc.state.direction = 'right';
-                        else if (rand == 3) 
-                            goatnpc.state.direction = 'left';
+                    if (Math.sqrt(dxa * dxa + dya * dya) > 300) {
+                        var rand = Math.floor(Math.random() * 3) + 1;
+                        if (goatnpc.state.direction == 'up') {
+                            if (rand == 1) 
+                                goatnpc.state.direction = 'up';
+                            else if (rand == 2) 
+                                goatnpc.state.direction = 'right';
+                            else if (rand == 3) 
+                                goatnpc.state.direction = 'left';
+                        }
+                        else if (goatnpc.state.direction == 'right') {
+                            if (rand == 1) 
+                                goatnpc.state.direction = 'down';
+                            else if (rand == 2)
+                                goatnpc.state.direction = 'right';
+                            else if (rand == 3) 
+                                goatnpc.state.direction = 'up';
+                        }
+                        else if (goatnpc.state.direction == 'down') {
+                            if (rand == 1) 
+                                goatnpc.state.direction = 'down';
+                            else if (rand == 2)
+                                goatnpc.state.direction = 'left';
+                            else if (rand == 3) 
+                                goatnpc.state.direction = 'right';
+                        }
+                        else if (goatnpc.state.direction == 'left') {
+                            if (rand == 1) 
+                                goatnpc.state.direction = 'up';
+                            else if (rand == 2) 
+                                goatnpc.state.direction = 'left';
+                            else if (rand == 3) 
+                                goatnpc.state.direction = 'down';
+                        }
+                        goatnpc.state.counter = 0.0;
                     }
-                    else if (goatnpc.state.direction == 'right') {
-                        if (rand == 1) 
-                            goatnpc.state.direction = 'down';
-                        else if (rand == 2)
-                            goatnpc.state.direction = 'right';
-                        else if (rand == 3) 
-                            goatnpc.state.direction = 'up';
-                    }
-                    else if (goatnpc.state.direction == 'down') {
-                        if (rand == 1) 
-                            goatnpc.state.direction = 'down';
-                        else if (rand == 2)
-                            goatnpc.state.direction = 'left';
-                        else if (rand == 3) 
-                            goatnpc.state.direction = 'right';
-                    }
-                    else if (goatnpc.state.direction == 'left') {
-                        if (rand == 1) 
-                            goatnpc.state.direction = 'up';
-                        else if (rand == 2) 
-                            goatnpc.state.direction = 'left';
-                        else if (rand == 3) 
-                            goatnpc.state.direction = 'down';
-                    }
-                    goatnpc.state.counter = 0.0;
-                    
-                }
-                
 
+                    if (Math.sqrt(dxa * dxa + dya * dya) < 300){
+                        if (goatnpc.state.counter > 160.0) {
+                            if (dxa > dya){
+                                if (dx > 0) {
+                                    goatnpc.state.direction = 'left';
+                                    goatnpc.state.velocity = 2.5;
+                                } else 
+                                    goatnpc.state.direction = 'right';
+                                    goatnpc.state.velocity = 2.5;
+                            } else {
+                                if (dy > 0) {
+                                    goatnpc.state.direction = 'up';
+                                    goatnpc.state.velocity = 2.5;
+                                } else 
+                                    goatnpc.state.direction = 'down';
+                                    goatnpc.state.velocity = 2.5;
+                            }
+                            }
+                        
+                    }
+                    
+                }   
             }
         }
         
@@ -559,6 +586,7 @@ function npcMoves(goatnpc, timeElapsed1, b){
             goatnpc.state.position.y -= goatnpc.state.velocity * timeElapsed1;
         }
     } 
+    goatnpc.state.velocity = 2;
     if (model.keyPressed.space == false)
             goatnpc.state.sprite = 1;    
 }
