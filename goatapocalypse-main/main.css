@@ -1,0 +1,106 @@
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    margin: 0;
+}
+#canvas{
+    flex: 1;
+}
+:root {
+    --pixel-size: 2px;
+    --grid-cell: celc(var(--pixel-size) * 16);
+}
+@media( min-width:700px ){
+    :root {
+        pixel-size: 4px; 
+    }
+}
+html, body { }
+
+body{ }
+
+.pixel-art {
+    image-rendering: pixelated;
+}
+
+.camera{
+    width: calc(var(--pixel-size) * 160);
+    height: calc(var(--pixel-size) * 144);
+    overflow: hidden;
+    background: #61ddf7;
+    position: relative;
+}
+.map {
+    image-rendering: pixelated;
+    /* background-image: */
+    background-size: 100%;
+    width: calc(13 * var(--grid-cell));
+    position: relative;
+}
+
+.character {
+    width: calc( var(--grid-cell)* 2 );
+    height: calc( var(--grid-cell)* 2 );
+    position: absolute;
+    overflow: hidden;
+}
+
+/* .shadow {
+    width: calc( var(--grid-cell)* 2 );
+    height: calc( var(--grid-cell)* 2 );
+    position: absolute;
+    left:0;
+    top:0;
+    /* background: */
+/* }
+
+.character_spritesheet {
+    position: absolute;
+    background-size: 100%;
+    width: calc( var(--grid-cell)* 8);
+} */ 
+
+.buttons button {
+  position: relative;
+  left: 100px;
+  top: -200px;
+  border-radius: 1px;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+  width: 102px;
+  height: 102px;
+}
+
+.buttons img {
+  width: 100px;
+  height: 100px;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+}
+
+.buttons button:nth-child(1) {
+  position: relative;
+  left: 2%;
+}
+
+.buttons button:nth-child(2) {
+  position: relative;
+  left: 3%;
+}
+
+.buttons button:nth-child(3) {
+  position: relative;
+  left: 61%;
+}
+
+.buttons button:nth-child(4) {
+  position: relative;
+  left: 62%;
+}
