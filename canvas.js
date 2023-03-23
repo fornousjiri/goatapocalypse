@@ -754,7 +754,8 @@ function update() {
     const dbutton = document.getElementById('leftbutton');
     
     lbutton.oncontextmenu = function(event) {
-      event.preventDefault();  
+      event.preventDefault();
+      return false;
     }
     
     lbutton.onpointerdown = function() {
