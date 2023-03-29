@@ -510,6 +510,7 @@ function init() {
     addEventListener('keyup', onKeyUp, false);
     addEventListener('load', onLoad, false);
     addEventListener('touchstart', touchDown);
+    addEventListener('touchend', touchUp);
 
     // animation
     requestAnimationFrame(animate); 
@@ -727,10 +728,45 @@ var touchY;
 function touchDown(event) {
   touchX = event.touches[0].clientX;
   touchY = event.touches[0].clientY;
+  
+  //left button
+  if (touchX <= 150 && touchX >= 50 && touchY <= 650 && touchY >= 550) {
+    model.buttonPressed.left = true;
+  }
+  //right button
+  if (touchX <= 1128 && touchX >= 1028 && touchY <= 650 && touchY >= 550) {
+    model.buttonPressed.right = true;
+  }
+  //up button
+  if (touchX <= 1015 && touchX >= 915 && touchY <= 650 && touchY >= 550) {
+    model.buttonPressed.up = true;
+  }
+  //down button
+  if (touchX <= 263 && touchX >= 163 && touchY <= 650 && touchY >= 550) {
+    model.buttonPressed.down = true;
+  }
   event.preventDefault();
 }
 
-
+function touchUp(event) {
+  //left button
+  if (touchX <= 150 && touchX >= 50 && touchY <= 650 && touchY >= 550) {
+    model.buttonPressed.left = false;
+  }
+  //right button
+  if (touchX <= 1128 && touchX >= 1028 && touchY <= 650 && touchY >= 550) {
+    model.buttonPressed.right = false;
+  }
+  //up button
+  if (touchX <= 1015 && touchX >= 915 && touchY <= 650 && touchY >= 550) {
+    model.buttonPressed.up = false;
+  }
+  //down button
+  if (touchX <= 263 && touchX >= 163 && touchY <= 650 && touchY >= 550) {
+    model.buttonPressed.down = false;
+  }
+  event.preventDefault();
+}
 function onLoad() {
     
     // loading
@@ -843,25 +879,25 @@ function update() {
     bbTouch1 = false;
     bbTouch2 = false;
 
-    if (touchX <= 150 && touchX >= 50 && touchY <= 650 && touchY >= 550) {
+    if (model.buttonPressed.left) {
         cx -= model.player.state.velocity * timeElapsed;
         model.player.state.direction = 'left';
         move = true;
     }
     
-    if (touchX <= 1128 && touchX >= 1028 && touchY <= 650 && touchY >= 550) {
+    if (model.buttonPressed.right) {
         cx += model.player.state.velocity * timeElapsed;
         model.player.state.direction = 'right';
         move = true;
     }
     
-    if (touchX <= 1015 && touchX >= 915 && touchY <= 650 && touchY >= 550) {
+    if (model.buttonPressed.up) {
         cy -= model.player.state.velocity * timeElapsed;
         model.player.state.direction = 'up';
         move = true;  
     }
     
-    if (touchX <= 263 && touchX >= 163 && touchY <= 650 && touchY >= 550) {
+    if (model.buttonPressed.down) {
         cy += model.player.state.velocity * timeElapsed;
         model.player.state.direction = 'down';
         move = true;
