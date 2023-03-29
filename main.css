@@ -7,7 +7,7 @@ body {
     flex-direction: column;
     padding: 0;
     margin: 0;
-    -webkit-touch-callout: 
+    -webkit-touch-callout: none;
 }
 #canvas{
     flex: 1;
@@ -18,12 +18,9 @@ body {
 }
 @media( min-width:700px ){
     :root {
-        pixel-size: 4px; 
+      pixel-size: 4px; 
     }
 }
-html, body { }
-
-body{ }
 
 .pixel-art {
     image-rendering: pixelated;
