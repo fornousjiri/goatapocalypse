@@ -172,6 +172,38 @@ var objectList = {
             top: [{src: 'images/boundingbox/hillrbb1.png', img: null}]
         },
         spriteSpeed: 500
+    },
+    lbutton: {
+        name: 'lbutton',
+        type: 'button',
+        spriteList: {
+            top: [{src: 'images/Buttons/Leftbutton.JPEG', img: null}]
+        },
+        spriteSpeed: 500
+    },
+    rbutton: {
+      name: 'rbutton',
+      type: 'button',
+      spriteList: {
+        top: [{ src: 'images/Buttons/Rightbutton.JPEG', img: null }]
+      },
+      spriteSpeed: 500
+    },
+    ubutton: {
+      name: 'ubutton',
+      type: 'button',
+      spriteList: {
+        top: [{ src: 'images/Buttons/Upbutton.JPEG', img: null }]
+      },
+      spriteSpeed: 500
+    },
+    dbutton: {
+      name: 'dbutton',
+      type: 'button',
+      spriteList: {
+        top: [{ src: 'images/Buttons/Downbutton.JPEG', img: null }]
+      },
+      spriteSpeed: 500
     }
 };
 
@@ -182,12 +214,19 @@ var model = {
     player: {},
     npc: {},
     boundingbox: [],
+    button: [],
     keyPressed: {
         up: false,
         down: false,
         right: false,
         left: false,
         space: false
+    },
+    buttonPressed: {
+        up: false,
+        down: false,
+        right: false,
+        left: false
     },
 
     time: {
@@ -329,7 +368,60 @@ function init() {
             }
         }
     ]
-
+    model.button = [
+        {
+            state: {
+              position: {
+                x: 100,
+                y: 600
+              },
+              sprite: 0,
+              type: objectList.lbutton,
+              size: 100,
+              direction: 'top',
+              spriteUpdate: window.performance.now() + Math.random() * objectList.lbutton.spriteSpeed
+            }
+        },
+        {
+          state: {
+            position: {
+              x: 1078,
+              y: 600
+            },
+            sprite: 0,
+            type: objectList.rbutton,
+            size: 100,
+            direction: 'top',
+            spriteUpdate: window.performance.now() + Math.random() * objectList.rbutton.spriteSpeed
+          }
+        },
+        {
+          state: {
+            position: {
+              x: 965,
+              y: 600
+            },
+            sprite: 0,
+            type: objectList.ubutton,
+            size: 100,
+            direction: 'top',
+            spriteUpdate: window.performance.now() + Math.random() * objectList.ubutton.spriteSpeed
+          }
+        },
+        {
+          state: {
+            position: {
+              x: 213,
+              y: 600
+            },
+            sprite: 0,
+            type: objectList.dbutton,
+            size: 100,
+            direction: 'top',
+            spriteUpdate: window.performance.now() + Math.random() * objectList.dbutton.spriteSpeed
+          }
+        }
+    ]
     // objects
     model.object = [
         {
@@ -417,6 +509,7 @@ function init() {
     addEventListener('keydown', onKeyDown, false);
     addEventListener('keyup', onKeyUp, false);
     addEventListener('load', onLoad, false);
+    addEventListener('touchstart', touchDown);
 
     // animation
     requestAnimationFrame(animate); 
@@ -628,6 +721,16 @@ function onKeyUp(event) {
     }
 }
 
+var touchX;
+var touchY;
+
+function touchDown(event) {
+  touchX = event.touches[0].clientX;
+  touchY = event.touches[0].clientY;
+  event.preventDefault();
+}
+
+
 function onLoad() {
     
     // loading
@@ -729,7 +832,7 @@ function update() {
         model.player.state.direction = 'up';
         move = true;
     } else if (model.keyPressed.left) {
-        cx -= model.player.state.velocity * timeElapsed;
+        cx -= model.player.state.velocity * timeElapsed; 
         model.player.state.direction = 'left';
         move = true;
     } else if (model.keyPressed.right) {
@@ -739,56 +842,31 @@ function update() {
     }
     bbTouch1 = false;
     bbTouch2 = false;
-    
-    var lbuttonhold = false;
-    var rbuttonhold = false;
-    var ubuttonhold = false;
-    var dbuttonhold = false;
-    
-    const lbutton = document.getElementById('leftbutton');
-    
-    const rbutton = document.getElementById('rightbutton');
-    
-    const ubutton = document.getElementById('upbutton');
-    
-    const dbutton = document.getElementById('leftbutton');
-    
-    lbutton.oncontextmenu = function(event) {
-      event.preventDefault();
-      return false;
+
+    if (touchX <= 150 && touchX >= 50 && touchY <= 650 && touchY >= 550) {
+        cx -= model.player.state.velocity * timeElapsed;
+        model.player.state.direction = 'left';
+        move = true;
     }
     
-    lbutton.onpointerdown = function() {
-      lbuttonhold = true;
+    if (touchX <= 1128 && touchX >= 1028 && touchY <= 650 && touchY >= 550) {
+        cx += model.player.state.velocity * timeElapsed;
+        model.player.state.direction = 'right';
+        move = true;
     }
     
-    rbutton.onpointerdown = function() {
-      rbuttonhold = true;
+    if (touchX <= 1015 && touchX >= 915 && touchY <= 650 && touchY >= 550) {
+        cy -= model.player.state.velocity * timeElapsed;
+        model.player.state.direction = 'up';
+        move = true;  
     }
     
-    ubutton.onpointerdown = function() {
-      ubuttonhold = true;
+    if (touchX <= 263 && touchX >= 163 && touchY <= 650 && touchY >= 550) {
+        cy += model.player.state.velocity * timeElapsed;
+        model.player.state.direction = 'down';
+        move = true;
     }
     
-    dbutton.onpointerdown = function() {
-      dbuttonhold = true;
-    }
-    
-    lbutton.onpointerup = function() {
-      lbuttonhold = false;
-    }
-    
-    rbutton.onpointerup = function() {
-      rbuttonhold = false;
-    }
-    
-    ubutton.onpointerup = function() {
-      ubuttonhold = false;
-    }
-    
-    dbutton.onpointerup = function() {
-      dbuttonhold = false;
-    }
     // document.getElementById('leftbutton').onclick = function() {
     //   model.player.state.position.x -= 9;
     // };
@@ -905,6 +983,17 @@ function draw() {
             item.state.size
         );
     });
+    
+    model.button.forEach(function(item) {
+      ctx.drawImage(
+        item.state.type.spriteList[item.state.direction][item.state.sprite].img,
+        item.state.position.x - item.state.size / 2,
+        item.state.position.y - item.state.size / 2,
+        item.state.size,
+        item.state.size
+      );
+    });
+    
 }
 
 function animate() {
