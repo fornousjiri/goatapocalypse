@@ -11,6 +11,8 @@ body {
 }
 #canvas{
     flex: 1;
+    -webkit-user-select: none;
+    user-select: none;
 }
 :root {
     --pixel-size: 2px;
