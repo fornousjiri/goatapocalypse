@@ -172,8 +172,27 @@ var objectList = {
             top: [{src: 'images/boundingbox/hillrbb1.png', img: null}]
         },
         spriteSpeed: 500
+    },
+    badge1: {
+        name: 'Badge1',
+        type: 'badges',
+        spriteList: {
+            top: [{src: 'images/badges/marker.png', img: null}]
+        },
+        spriteSpeed: 500
+    },
+    arrow: {
+        name: 'arrow',
+        type: 'wobject',
+        spriteList: {
+            down: [{src: 'images/weapon/darrow.png', img: null}],
+            up: [{src: 'images/weapon/uarrow.png', img: null}],
+            left: [{src: 'images/weapon/larrow.png', img: null}],
+            right: [{src: 'images/weapon/rarrow.png', img: null}]
+        },
+        spriteSpeed: 500
     }
-    
+
 };
 
 // model
@@ -181,14 +200,23 @@ var model = {
     map: {},
     object: [],
     player: {},
-    npc: {},
-    boundingbox:[],
+    npc: [],
+    boundingbox: [],
+    badges: [],
+    weapon: {
+        arrow: false
+    },
+    wobject: [],
     keyPressed: {
         up: false,
         down: false,
         right: false,
         left: false,
-        space: false
+        space: false,
+        f: false,
+        lmb: false,
+        mmb: false,
+        rmb: false
     },
 
     time: {
@@ -329,7 +357,53 @@ function init() {
             }
         }
     ]
-
+    // badges
+    model.badges = [
+        {
+            state: {
+                position: {
+                    x:0,
+                    y:0
+                },
+                sprite: 0,
+                type: objectList.badge1,
+                size: 20,
+                direction: 'top',
+                spriteUpdate: window.performance.now() + Math.random() * objectList.badge1.spriteSpeed
+            }
+        },
+        {
+            state: {
+                position: {
+                    x:0,
+                    y:0
+                },
+                sprite: 0,
+                type: objectList.badge1,
+                size: 20,
+                direction: 'top',
+                spriteUpdate: window.performance.now() + Math.random() * objectList.badge1.spriteSpeed
+            }
+        }
+    ]
+    //weapons
+    model.wobject = [
+        {
+            state: {
+                position: {
+                    x:0,
+                    y:0
+                },
+                sprite: 0,
+                type: objectList.arrow,
+                size: 35,
+                direction: 'down',
+                damage: 20,
+                velocity: 9,
+                spriteUpdate: window.performance.now() + Math.random() * objectList.arrow.spriteSpeed
+            }
+        }
+    ]
     // objects
     model.object = [
         {
@@ -416,6 +490,8 @@ function init() {
     addEventListener('resize', onResize);
     addEventListener('keydown', onKeyDown, false);
     addEventListener('keyup', onKeyUp, false);
+    addEventListener('mousedown', onMouseDown, false);
+    addEventListener('mouseup', onMouseUp, false);
     addEventListener('load', onLoad, false);
 
     // animation
@@ -453,6 +529,9 @@ function bbTouchtof(goatnpc1){
     }
 }
 
+var marker0 = false;
+var marker1 = false;
+
 function npcMoves(goatnpc, timeElapsed1, b){
     var dx = goatnpc.state.position.x - model.player.state.position.x;
     var dy = goatnpc.state.position.y - model.player.state.position.y;
@@ -465,6 +544,10 @@ function npcMoves(goatnpc, timeElapsed1, b){
             if (goatnpc.state.position.x < (canvas.width - 40) && goatnpc.state.position.x > (canvas.width - canvas.width + 40) && goatnpc.state.position.y > (canvas.height - canvas.height + 40) && goatnpc.state.position.y < (canvas.height - 40)) {
                 if (b == false) {
                     if (Math.sqrt(dxa * dxa + dya * dya) > 300) {
+                        if (goatnpc == model.npc[0])
+                            marker0 = false;
+                        if (goatnpc == model.npc[1])
+                            marker1 = false;
                         var rand = Math.floor(Math.random() * 3) + 1;
                         if (goatnpc.state.direction == 'up') {
                             if (rand == 1) 
@@ -502,6 +585,10 @@ function npcMoves(goatnpc, timeElapsed1, b){
                     }
 
                     if (Math.sqrt(dxa * dxa + dya * dya) < 300){
+                        if (goatnpc == model.npc[0])
+                            marker0 = true;
+                        if (goatnpc == model.npc[1])
+                            marker1 = true;
                         if (goatnpc.state.counter > 160.0) {
                             if (dxa > dya){
                                 if (dx > 0) {
@@ -588,7 +675,15 @@ function npcMoves(goatnpc, timeElapsed1, b){
     } 
     goatnpc.state.velocity = 2;
     if (model.keyPressed.space == false)
-            goatnpc.state.sprite = 1;    
+            goatnpc.state.sprite = 1;
+    if (goatnpc == model.npc[0]) {
+        model.badges[0].state.position.x = goatnpc.state.position.x;
+        model.badges[0].state.position.y = goatnpc.state.position.y - goatnpc.state.size / 2;
+    }
+    if (goatnpc == model.npc[1]) { 
+        model.badges[1].state.position.x = goatnpc.state.position.x;
+        model.badges[1].state.position.y = goatnpc.state.position.y - goatnpc.state.size / 2;
+    }
 }
 
 function onResize() {
@@ -605,6 +700,9 @@ function onResize() {
     canvas.height = window.innerHeight;
 }
 
+// let keydownTime = 0;
+// let keyupTime = 0;
+// let timeBetween;
 function onKeyDown(event) {
     switch (event.keyCode) {
         case 39: // right
@@ -630,10 +728,13 @@ function onKeyDown(event) {
         //         model.player.state.size = 100;
         //     }
         //     break;
-            case 32: //space
-                model.keyPressed.space = true;
-                break;
-                
+        case 32: //space
+            model.keyPressed.space = true;
+            break;
+        case 70: // F
+            model.keyPressed.f = true;
+            // keydownTime = performance.now();
+            // timeBetween = 0;
         default: break;
     }
 }
@@ -655,8 +756,41 @@ function onKeyUp(event) {
         case 32: //space
             model.keyPressed.space = false;
             break;
+        case 70: // F
+            // keyupTime = performance.now();
+            // timeBetween = keydownTime - keyupTime;
+            // console.log(keydownTime);
+            // console.log(keyupTime);
+            // console.log(timeBetween);
+            // keydownTime = 0;
+            // keyupTime = 0;
+            model.keyPressed.f = false;
         default: break;
     }
+}
+
+function onMouseDown(event) {
+    //lmb
+    if (event.button == 0)
+        model.keyPressed.lmb = false;
+    //mmb
+    if (event.button == 1)
+        model.keyPressed.mmb = true;
+    //rmb
+    if (event.button == 2)
+        model.keyPressed.rmb = true;
+}
+
+function onMouseUp(event) {
+    //lmb
+    if (event.button == 0)
+        model.keyPressed.lmb = true;
+    //mmb
+    if (event.button == 1)
+        model.keyPressed.mmb = false;
+    //rmb
+    if (event.button == 2)
+        model.keyPressed.rmb = false;
 }
 
 function onLoad() {
@@ -760,6 +894,31 @@ function update() {
         model.player.state.direction = 'right';
         move = true;
     }
+
+    if (model.keyPressed.lmb) {
+        model.weapon.arrow = true;
+        if (model.player.state.direction == 'down') {
+            model.wobject[0].state.direction = 'down';
+            model.wobject[0].state.position.x = cx
+            model.wobject[0].state.position.y = cy + (model.player.state.size / 4);
+        }
+        else if (model.player.state.direction == 'up') {
+            model.wobject[0].state.direction = 'up';
+            model.wobject[0].state.position.x = cx 
+            model.wobject[0].state.position.y = cy - (model.player.state.size / 4);
+        }
+        else if (model.player.state.direction == 'left') {
+            model.wobject[0].state.direction = 'left';
+            model.wobject[0].state.position.x = cx - (model.player.state.size / 4);
+            model.wobject[0].state.position.y = cy;
+        }
+        else if (model.player.state.direction == 'right') {
+            model.wobject[0].state.direction = 'right';
+            model.wobject[0].state.position.x = cx + (model.player.state.size / 4);
+            model.wobject[0].state.position.y = cy;
+        }
+        model.keyPressed.lmb = false;
+    }
     bbTouch1 = false;
     bbTouch2 = false;
     // pro goat2 tedy pro bilou kozu
@@ -842,6 +1001,26 @@ function draw() {
         );
     });
 
+    // badges
+    if (marker0) {
+        ctx.drawImage(
+            model.badges[0].state.type.spriteList[model.badges[0].state.direction][model.badges[0].state.sprite].img, 
+            model.badges[0].state.position.x - model.badges[0].state.size / 2, 
+            model.badges[0].state.position.y - model.badges[0].state.size / 2, 
+            model.badges[0].state.size,
+            model.badges[0].state.size
+        );
+    }
+    if (marker1) {
+        ctx.drawImage(
+            model.badges[1].state.type.spriteList[model.badges[1].state.direction][model.badges[1].state.sprite].img, 
+            model.badges[1].state.position.x - model.badges[1].state.size / 2, 
+            model.badges[1].state.position.y - model.badges[1].state.size / 2, 
+            model.badges[1].state.size,
+            model.badges[1].state.size
+        );
+    }
+    
     // player
     ctx.drawImage(
         model.player.state.type.spriteList[model.player.state.direction][model.player.state.sprite].img, 
@@ -850,7 +1029,17 @@ function draw() {
         model.player.state.size,
         model.player.state.size
     );
-    
+
+    //arrow
+    if (model.weapon.arrow && model.wobject[0].state.position.x < canvas.width && model.wobject[0].state.position.x  > 0 && model.wobject[0].state.position.y < canvas.height && model.wobject[0].state.position.y > 0) {
+        ctx.drawImage(
+            model.wobject[0].state.type.spriteList[model.wobject[0].state.direction][model.wobject[0].state.sprite].img, 
+            model.wobject[0].state.position.x - model.wobject[0].state.size / 2, 
+            model.wobject[0].state.position.y - model.wobject[0].state.size / 2, 
+            model.wobject[0].state.size,
+            model.wobject[0].state.size
+        );
+    }
 
     // objects
     model.object.forEach(function(item) {
@@ -863,8 +1052,17 @@ function draw() {
         );
     });
 
+    if (model.wobject[0].state.direction == 'down')
+        model.wobject[0].state.position.y += model.wobject[0].state.velocity;
 
-   
+    if (model.wobject[0].state.direction == 'up')
+        model.wobject[0].state.position.y -= model.wobject[0].state.velocity;
+
+    if (model.wobject[0].state.direction == 'left')
+        model.wobject[0].state.position.x -= model.wobject[0].state.velocity;
+
+    if (model.wobject[0].state.direction == 'right')
+        model.wobject[0].state.position.x += model.wobject[0].state.velocity;
 }
 
 function animate() {
