@@ -824,6 +824,8 @@ function onLoad() {
         return img;
     }
 }
+var arrowFall = false;
+var arrowTime = 0;
 
 function update() {
 
@@ -896,7 +898,10 @@ function update() {
     }
 
     if (model.keyPressed.lmb) {
+        arrowFall = false;
         model.weapon.arrow = true;
+        model.wobject[0].state.velocity = 9;
+        arrowTime = 0;
         if (model.player.state.direction == 'down') {
             model.wobject[0].state.direction = 'down';
             model.wobject[0].state.position.x = cx
@@ -919,6 +924,13 @@ function update() {
         }
         model.keyPressed.lmb = false;
     }
+
+    if (model.wobject[0].state.position.x > canvas.width || model.wobject[0].state.position.x < 0 || model.wobject[0].state.position.y > canvas.height || model.wobject[0].state.position.y < 0)
+        arrowTime = 0;
+
+    if (model.wobject[0].state.velocity < 2)
+        arrowFall = true;
+
     bbTouch1 = false;
     bbTouch2 = false;
     // pro goat2 tedy pro bilou kozu
@@ -1039,6 +1051,17 @@ function draw() {
             model.wobject[0].state.size,
             model.wobject[0].state.size
         );
+        if (model.wobject[0].state.direction == 'left' || model.wobject[0].state.direction == 'right') {
+            if (arrowTime > 65 && arrowFall == false) {
+            model.wobject[0].state.velocity -= 0.07;
+            }
+        }
+        else if (model.wobject[0].state.direction == 'down' || model.wobject[0].state.direction == 'up') {
+            if (arrowTime > 40 && arrowFall == false) {
+                model.wobject[0].state.velocity -= 0.07;
+            }
+        }
+
     }
 
     // objects
@@ -1052,17 +1075,26 @@ function draw() {
         );
     });
 
-    if (model.wobject[0].state.direction == 'down')
-        model.wobject[0].state.position.y += model.wobject[0].state.velocity;
+    if (model.weapon.arrow)
+    arrowTime += 1;
 
-    if (model.wobject[0].state.direction == 'up')
-        model.wobject[0].state.position.y -= model.wobject[0].state.velocity;
+    console.log(arrowTime);
+    if (arrowFall == false) {
+        if (model.wobject[0].state.direction == 'down')
+            model.wobject[0].state.position.y += model.wobject[0].state.velocity;
 
-    if (model.wobject[0].state.direction == 'left')
-        model.wobject[0].state.position.x -= model.wobject[0].state.velocity;
+        if (model.wobject[0].state.direction == 'up')
+            model.wobject[0].state.position.y -= model.wobject[0].state.velocity;
 
-    if (model.wobject[0].state.direction == 'right')
-        model.wobject[0].state.position.x += model.wobject[0].state.velocity;
+        if (model.wobject[0].state.direction == 'left')
+            model.wobject[0].state.position.x -= model.wobject[0].state.velocity;
+
+        if (model.wobject[0].state.direction == 'right')
+            model.wobject[0].state.position.x += model.wobject[0].state.velocity;
+    }
+
+    if (arrowFall)
+        model.wobject[0].state.direction = 'down';
 }
 
 function animate() {
